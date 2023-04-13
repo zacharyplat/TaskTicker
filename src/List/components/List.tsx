@@ -2,37 +2,45 @@ import React, { useState } from 'react';
 import { Button, StyleSheet, TextInput, View } from 'react-native';
 import ListItem from './ListItem';
 
+type Props = {
+  timer: number;
+};
+
 type ListItem = {
   id: string;
   text: string;
   isCompleted: boolean;
+  time: number;
 };
+
+export type EditableItemKeys = { text: string } | { time: number };
+
 function randId() {
   return Date.now() + '';
 }
-export default function List() {
+export default function List(props: Props) {
   const [firstText, setFirstText] = useState('');
   const [list, setList] = useState<ListItem[]>([]);
   const [focusedItem, setFocusedItem] = useState('');
+  const { timer } = props;
 
   const addFirstItem = (text: string) => {
     const newItem: ListItem = {
       id: randId(),
       text: text,
       isCompleted: false,
+      time: 0,
     };
-    setList([newItem]);
+    setList([...list, newItem]);
     setFirstText('');
     setFocusedItem(newItem.id);
-    console.log('addFirstItem');
   };
 
-  const editListItem = (text: string, id: string) => {
+  const editListItem = (objectToSpread: EditableItemKeys, id: string) => {
     const editedList = list.map((item) =>
-      item.id === id ? { ...item, text } : item
+      item.id === id ? { ...item, ...objectToSpread } : item
     );
     setList(editedList);
-    console.log('editListItem');
   };
 
   const appendItemToList = (id?: string) => {
@@ -40,26 +48,22 @@ export default function List() {
       id: randId(),
       text: '',
       isCompleted: false,
+      time: 0,
     };
     const newList = list.flatMap(
       (item) => (item.id === id && [item, newItem]) || item
     );
-    id ? setList(newList) : setList([newItem]);
+    setList(newList);
     setFocusedItem(newItem.id);
-    console.log('appendItemToList');
   };
 
   const removeItem = (id: string) => {
     const previousId = getPreviousId(id);
-    console.log(`old focusid ${focusedItem}`);
-    console.log(`new focusid ${previousId}`);
     setFocusedItem(previousId);
     const newList = list.filter((item) => item.id !== id);
     setList(newList);
-    console.log('removeItem');
   };
   const getPreviousId = (id: string) => {
-    console.log('getpreviousId');
     const idIndex = list.findIndex((item) => item.id === id);
     return list[idIndex - 1].id;
   };
@@ -70,12 +74,12 @@ export default function List() {
         <View style={styles.listItem} key={item.id}>
           <ListItem
             id={item.id}
-            key={item.id}
             text={item.text}
             focused={item.id === focusedItem}
             appendItemToList={appendItemToList}
             editListItem={editListItem}
             removeItem={removeItem}
+            time={item.time}
           />
         </View>
       ))}
@@ -87,6 +91,7 @@ export default function List() {
           value={firstText}
           placeholder="List item"
           onSubmitEditing={() => addFirstItem(firstText)}
+          editable={!timer}
         />
       </View>
     </View>
@@ -115,5 +120,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     borderBottomColor: 'grey',
     borderBottomWidth: 2,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
 });
