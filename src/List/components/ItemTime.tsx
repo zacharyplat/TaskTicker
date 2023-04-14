@@ -5,7 +5,7 @@ import { EditableItemKeys } from './List';
 
 type Props = {
   id: string;
-  time: number;
+  duration: number;
   timer: number;
   editListItem: (obj: EditableItemKeys, id: string) => void;
 };
@@ -14,9 +14,9 @@ const SECOND = 1000;
 const MINUTE = SECOND * 60;
 
 export default function ItemTime(props: Props) {
-  const { id, time, timer, editListItem } = props;
-  const minutes = Math.floor((time / MINUTE) % 60);
-  const seconds = (time / SECOND) % 60;
+  const { id, duration, timer, editListItem } = props;
+  const minutes = Math.floor((duration / MINUTE) % 60);
+  const seconds = (duration / SECOND) % 60;
 
   const handleChangeMinute = (text: string) => {
     const newTime = parseInt(text, 10) || 0;
@@ -26,8 +26,8 @@ export default function ItemTime(props: Props) {
     const newTime = parseInt(text, 10) || 0;
     handleChangeText(newTime * SECOND + minutes * MINUTE);
   };
-  const handleChangeText = (time: number) => {
-    editListItem({ time: time }, id);
+  const handleChangeText = (duration: number) => {
+    editListItem({ duration: duration }, id);
   };
   const padTime = (num: number) => {
     return (Math.floor(num) + '').padStart(2, '0');

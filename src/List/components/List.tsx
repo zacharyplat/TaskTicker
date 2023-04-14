@@ -9,11 +9,12 @@ type Props = {
 type ListItem = {
   id: string;
   text: string;
-  isCompleted: boolean;
-  time: number;
+  completed?: Date;
+  started?: Date;
+  duration: number;
 };
 
-export type EditableItemKeys = { text: string } | { time: number };
+export type EditableItemKeys = { text: string } | { duration: number };
 
 function randId() {
   return Date.now() + '';
@@ -28,8 +29,7 @@ export default function List(props: Props) {
     const newItem: ListItem = {
       id: randId(),
       text: text,
-      isCompleted: false,
-      time: 0,
+      duration: 0,
     };
     setList([...list, newItem]);
     setFirstText('');
@@ -47,8 +47,7 @@ export default function List(props: Props) {
     const newItem: ListItem = {
       id: randId(),
       text: '',
-      isCompleted: false,
-      time: 0,
+      duration: 0,
     };
     const newList = list.flatMap(
       (item) => (item.id === id && [item, newItem]) || item
@@ -76,7 +75,7 @@ export default function List(props: Props) {
             id={item.id}
             text={item.text}
             focused={item.id === focusedItem}
-            time={item.time}
+            duration={item.duration}
             timer={timer}
             appendItemToList={appendItemToList}
             editListItem={editListItem}
