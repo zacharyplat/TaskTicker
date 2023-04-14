@@ -9,6 +9,7 @@ type Props = {
   text: string;
   focused: boolean;
   time: number;
+  timer: number;
   appendItemToList: (id?: string) => void;
   editListItem: (obj: EditableItemKeys, id: string) => void;
   removeItem: (id: string) => void;
@@ -20,6 +21,7 @@ export default function ListItem(props: Props) {
     text,
     focused,
     time,
+    timer,
     appendItemToList,
     editListItem,
     removeItem,
@@ -46,10 +48,11 @@ export default function ListItem(props: Props) {
         onKeyPress={handleOnKeyPress}
         onSubmitEditing={() => appendItemToList(id)}
         autoFocus={focused}
+        editable={!timer}
       >
         {text}
       </TextInput>
-      <ItemTime id={id} time={time} editListItem={editListItem} />
+      <ItemTime id={id} time={time} editListItem={editListItem} timer={timer} />
     </View>
   );
 }

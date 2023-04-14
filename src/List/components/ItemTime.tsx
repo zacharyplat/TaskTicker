@@ -6,6 +6,7 @@ import { EditableItemKeys } from './List';
 type Props = {
   id: string;
   time: number;
+  timer: number;
   editListItem: (obj: EditableItemKeys, id: string) => void;
 };
 
@@ -13,7 +14,7 @@ const SECOND = 1000;
 const MINUTE = SECOND * 60;
 
 export default function ItemTime(props: Props) {
-  const { id, time, editListItem } = props;
+  const { id, time, timer, editListItem } = props;
   const minutes = Math.floor((time / MINUTE) % 60);
   const seconds = (time / SECOND) % 60;
 
@@ -28,27 +29,43 @@ export default function ItemTime(props: Props) {
   const handleChangeText = (time: number) => {
     editListItem({ time: time }, id);
   };
+  const padTime = (num: number) => {
+    return (Math.floor(num) + '').padStart(2, '0');
+  };
+  const calcTimeDifference = () => {
+    return minutes * MINUTE + seconds * SECOND - timer;
+  };
   return (
     <Fragment>
-      <TextInput
-        style={[styles.item, styles.input, styles.minute]}
-        onChangeText={handleChangeMinute}
-        keyboardType={'numeric'}
-        maxLength={3}
-        placeholder={'min'}
-      >
-        {minutes > 0 ? minutes : ''}
-      </TextInput>
-      <Text>:</Text>
-      <TextInput
-        style={[styles.item, styles.input, styles.second]}
-        onChangeText={handleChangeSecond}
-        keyboardType={'numeric'}
-        maxLength={2}
-        placeholder={'sec'}
-      >
-        {seconds > 0 ? seconds : ''}
-      </TextInput>
+      {!timer && (
+        <Fragment>
+          <TextInput
+            style={[styles.item, styles.input, styles.minute]}
+            onChangeText={handleChangeMinute}
+            keyboardType={'numeric'}
+            maxLength={3}
+            placeholder={'min'}
+          >
+            {minutes > 0 ? minutes : ''}
+          </TextInput>
+          <Text>:</Text>
+          <TextInput
+            style={[styles.item, styles.input, styles.second]}
+            onChangeText={handleChangeSecond}
+            keyboardType={'numeric'}
+            maxLength={2}
+            placeholder={'sec'}
+          >
+            {seconds > 0 ? seconds : ''}
+          </TextInput>
+        </Fragment>
+      )}
+      {!!timer && (
+        <Text>
+          {`${padTime(calcTimeDifference() / MINUTE)}`}:
+          {`${padTime((calcTimeDifference() / SECOND) % 60)}`}
+        </Text>
+      )}
     </Fragment>
   );
 }

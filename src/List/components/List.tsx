@@ -76,10 +76,11 @@ export default function List(props: Props) {
             id={item.id}
             text={item.text}
             focused={item.id === focusedItem}
+            time={item.time}
+            timer={timer}
             appendItemToList={appendItemToList}
             editListItem={editListItem}
             removeItem={removeItem}
-            time={item.time}
           />
         </View>
       ))}
