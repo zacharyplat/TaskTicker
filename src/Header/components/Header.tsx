@@ -13,6 +13,11 @@ export default function Header(props: Props) {
   const minutes = Math.floor(timer / 1000 / 60);
   const seconds = Math.floor((timer / 1000) % 60);
   const displaySeconds = (seconds + '').padStart(2, '0');
+  // when we have a start time that has some amount of milliseconds it causes
+  // the elapsed time to stutter *might not help*
+  const zeroedMillisecondsDate = () => {
+    return Math.floor(Date.now() / 1000) * 1000;
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Task Ticker</Text>
@@ -20,7 +25,7 @@ export default function Header(props: Props) {
         {timer <= 0 && (
           <Button
             title="&#x25B6; Start"
-            onPress={() => setInitialTime(Date.now())}
+            onPress={() => setInitialTime(zeroedMillisecondsDate())}
           />
         )}
         {timer > 0 && (

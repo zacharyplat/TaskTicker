@@ -6,15 +6,19 @@ type Props = {
   timer: number;
 };
 
-type ListItem = {
+export type ListItem = {
   id: string;
   text: string;
-  completed?: Date;
-  started?: Date;
+  completed?: number;
+  started?: number;
   duration: number;
 };
 
-export type EditableItemKeys = { text: string } | { duration: number };
+export type EditableItemKeys =
+  | { text: string }
+  | { duration: number }
+  | { started: number }
+  | { completed: number };
 
 function randId() {
   return Date.now() + '';
@@ -24,6 +28,17 @@ export default function List(props: Props) {
   const [list, setList] = useState<ListItem[]>([]);
   const [focusedItem, setFocusedItem] = useState('');
   const { timer } = props;
+
+  /*
+  useEffect(() => {
+    let active = list.find(
+      (item) => item.started !== undefined && !item.completed
+    );
+    if (!active && !!list[0]) {
+      active = list[0];
+    }
+  }, [timer]);
+  */
 
   const addFirstItem = (text: string) => {
     const newItem: ListItem = {
@@ -72,10 +87,8 @@ export default function List(props: Props) {
       {list.map((item) => (
         <View style={styles.listItem} key={item.id}>
           <ListItem
-            id={item.id}
-            text={item.text}
+            item={item}
             focused={item.id === focusedItem}
-            duration={item.duration}
             timer={timer}
             appendItemToList={appendItemToList}
             editListItem={editListItem}
@@ -83,17 +96,19 @@ export default function List(props: Props) {
           />
         </View>
       ))}
-      <View style={styles.listItem}>
-        <Button title="[+]" onPress={() => addFirstItem(firstText)} />
-        <TextInput
-          style={styles.input}
-          onChangeText={setFirstText}
-          value={firstText}
-          placeholder="List item"
-          onSubmitEditing={() => addFirstItem(firstText)}
-          editable={!timer}
-        />
-      </View>
+      {timer <= 0 && (
+        <View style={styles.listItem}>
+          <Button title="[+]" onPress={() => addFirstItem(firstText)} />
+          <TextInput
+            style={styles.input}
+            onChangeText={setFirstText}
+            value={firstText}
+            placeholder="List item"
+            onSubmitEditing={() => addFirstItem(firstText)}
+            editable={!timer}
+          />
+        </View>
+      )}
     </View>
   );
 }

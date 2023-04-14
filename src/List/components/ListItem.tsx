@@ -2,13 +2,11 @@ import Checkbox from 'expo-checkbox';
 import * as React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import ItemTime from './ItemTime';
-import { EditableItemKeys } from './List';
+import { EditableItemKeys, ListItem as Item } from './List';
 
 type Props = {
-  id: string;
-  text: string;
+  item: Item;
   focused: boolean;
-  duration: number;
   timer: number;
   appendItemToList: (id?: string) => void;
   editListItem: (obj: EditableItemKeys, id: string) => void;
@@ -16,17 +14,16 @@ type Props = {
 };
 
 export default function ListItem(props: Props) {
-  const {
-    id,
-    text,
-    focused,
-    duration,
-    timer,
-    appendItemToList,
-    editListItem,
-    removeItem,
-  } = props;
+  const { focused, timer, appendItemToList, editListItem, removeItem } = props;
+  const { id, text, completed, started, duration } = props.item;
+
   const [state, setState] = React.useState(false);
+
+  const handleCheckboxChange = (bool: boolean) => {
+    setState(bool);
+    editListItem({ completed: timer }, id);
+  };
+
   const handleChangeText = (string: string) => {
     editListItem({ text: string }, id);
   };
@@ -40,7 +37,7 @@ export default function ListItem(props: Props) {
       <Checkbox
         style={styles.checkbox}
         value={state}
-        onValueChange={setState}
+        onValueChange={handleCheckboxChange}
       />
       <TextInput
         style={[styles.item, styles.input]}

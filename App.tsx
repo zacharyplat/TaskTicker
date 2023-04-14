@@ -7,17 +7,16 @@ import List from './src/List/components/List';
 export default function App() {
   const [initialTime, setInitialTime] = useState(0);
   const [timer, setTimer] = useState(0);
+
   useEffect(() => {
     if (initialTime <= 0) {
       setTimer(0);
       return;
     }
 
+    //
     setTimer(1);
-    const interval = setInterval(
-      () => setTimer(Date.now() - initialTime),
-      1000
-    );
+    const interval = setInterval(() => setTimer(Date.now() - initialTime), 100);
 
     return () => clearInterval(interval);
   }, [initialTime]);
