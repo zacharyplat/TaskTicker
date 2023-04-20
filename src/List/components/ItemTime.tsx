@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Fragment } from 'react';
 import { StyleSheet, Text, TextInput } from 'react-native';
-import { EditableItemKeys } from './List';
+import { EditableItemKeys, ListItem } from './List';
 
 type Props = {
-  id: string;
-  duration: number;
+  item: ListItem;
   timer: number;
+  isActive: boolean;
   editListItem: (obj: EditableItemKeys, id: string) => void;
 };
 
@@ -14,7 +14,8 @@ const SECOND = 1000;
 const MINUTE = SECOND * 60;
 
 export default function ItemTime(props: Props) {
-  const { id, duration, timer, editListItem } = props;
+  const { id, duration, elapsed, isCompleted } = props.item;
+  const { timer, isActive, editListItem } = props;
   const minutes = Math.floor((duration / MINUTE) % 60);
   const seconds = (duration / SECOND) % 60;
 
@@ -30,48 +31,72 @@ export default function ItemTime(props: Props) {
     editListItem({ duration: duration }, id);
   };
   const padTime = (num: number) => {
-    return (Math.floor(num) + '').padStart(2, '0');
+    const rounding = num > 0 ? Math.floor : Math.ceil;
+    return (rounding(num) + '').padStart(2, '0');
   };
   const calcTimeDifference = () => {
-    return minutes * MINUTE + seconds * SECOND - timer;
+    return minutes * MINUTE + seconds * SECOND - (elapsed || 0);
   };
-  return (
-    <Fragment>
-      {!timer && (
-        <Fragment>
-          <TextInput
-            style={[styles.item, styles.input, styles.minute]}
-            onChangeText={handleChangeMinute}
-            keyboardType={'numeric'}
-            maxLength={3}
-            placeholder={'min'}
-          >
-            {minutes > 0 ? minutes : ''}
-          </TextInput>
-          <Text>:</Text>
-          <TextInput
-            style={[styles.item, styles.input, styles.second]}
-            onChangeText={handleChangeSecond}
-            keyboardType={'numeric'}
-            maxLength={2}
-            placeholder={'sec'}
-          >
-            {seconds > 0 ? seconds : ''}
-          </TextInput>
-        </Fragment>
-      )}
-      {!!timer && (
-        <Text>
-          {`${padTime(calcTimeDifference() / MINUTE)}`}:
-          {`${padTime((calcTimeDifference() / SECOND) % 60)}`}
-        </Text>
-      )}
-    </Fragment>
-  );
+
+  const renderTimeInputs = () => {
+    return (
+      <Fragment>
+        <TextInput
+          style={[styles.itemTime, styles.input, styles.minute]}
+          onChangeText={handleChangeMinute}
+          keyboardType={'numeric'}
+          maxLength={3}
+          placeholder={'min'}
+        >
+          {minutes > 0 ? minutes : ''}
+        </TextInput>
+        <Text>:</Text>
+        <TextInput
+          style={[styles.itemTime, styles.input, styles.second]}
+          onChangeText={handleChangeSecond}
+          keyboardType={'numeric'}
+          maxLength={2}
+          placeholder={'sec'}
+        >
+          {seconds > 0 ? seconds : ''}
+        </TextInput>
+      </Fragment>
+    );
+  };
+  const renderTimeLeft = () => {
+    const color = calcTimeDifference() > 0 ? styles.underTime : styles.overTime;
+    return (
+      <Text style={[color, styles.itemTime, styles.countdown]}>
+        {`${padTime(calcTimeDifference() / MINUTE)}`}:
+        {`${padTime((calcTimeDifference() / SECOND) % 60)}`}
+      </Text>
+    );
+  };
+  const renderCountdownOrTimeLeft = () => {
+    if (!isActive && !elapsed) {
+      return (
+        <Text style={styles.itemTime}>{`${minutes}:${padTime(seconds)}`}</Text>
+      );
+    } else {
+      return renderTimeLeft();
+    }
+  };
+  const renderRoot = () => {
+    if (!timer) {
+      if (!elapsed) {
+        return renderTimeInputs();
+      } else {
+        return renderTimeLeft();
+      }
+    } else {
+      return renderCountdownOrTimeLeft();
+    }
+  };
+  return <Fragment>{renderRoot()}</Fragment>;
 }
 
 const styles = StyleSheet.create({
-  item: {
+  itemTime: {
     fontSize: 18,
   },
   input: {
@@ -87,5 +112,16 @@ const styles = StyleSheet.create({
   second: {
     borderBottomRightRadius: 5,
     borderTopRightRadius: 5,
+  },
+
+  countdown: {
+    marginLeft: 8,
+    borderRadius: 5,
+  },
+  underTime: {
+    color: 'green',
+  },
+  overTime: {
+    color: 'red',
   },
 });

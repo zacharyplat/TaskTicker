@@ -14,7 +14,6 @@ export default function App() {
       return;
     }
 
-    //
     setTimer(1);
     const interval = setInterval(() => setTimer(Date.now() - initialTime), 100);
 

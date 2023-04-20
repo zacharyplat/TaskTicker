@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, StyleSheet, TextInput, View } from 'react-native';
 import ListItem from './ListItem';
 
@@ -9,16 +9,16 @@ type Props = {
 export type ListItem = {
   id: string;
   text: string;
-  completed?: number;
-  started?: number;
+  isCompleted?: boolean;
+  elapsed?: number;
   duration: number;
 };
 
 export type EditableItemKeys =
   | { text: string }
   | { duration: number }
-  | { started: number }
-  | { completed: number };
+  | { elapsed: number }
+  | { isCompleted: boolean };
 
 function randId() {
   return Date.now() + '';
@@ -26,21 +26,20 @@ function randId() {
 export default function List(props: Props) {
   const [firstText, setFirstText] = useState('');
   const [list, setList] = useState<ListItem[]>([]);
-  const [focusedItem, setFocusedItem] = useState('');
+  const [focusedItemId, setFocusedItemId] = useState('');
+  const [activeItemId, setActiveItemId] = useState('');
+  const [timerSinceLastElapsed, setTimerSinceLastElapsed] = useState(0);
   const { timer } = props;
 
-  /*
   useEffect(() => {
-    let active = list.find(
-      (item) => item.started !== undefined && !item.completed
-    );
-    if (!active && !!list[0]) {
-      active = list[0];
+    if (timer <= 0 || !!activeItemId) {
+      incrementElapsedTime();
+      return;
     }
+    !!list[0] && setActiveItemId(list[0].id);
   }, [timer]);
-  */
 
-  const addFirstItem = (text: string) => {
+  const addEndItem = (text: string) => {
     const newItem: ListItem = {
       id: randId(),
       text: text,
@@ -48,7 +47,7 @@ export default function List(props: Props) {
     };
     setList([...list, newItem]);
     setFirstText('');
-    setFocusedItem(newItem.id);
+    setFocusedItemId(newItem.id);
   };
 
   const editListItem = (objectToSpread: EditableItemKeys, id: string) => {
@@ -68,12 +67,12 @@ export default function List(props: Props) {
       (item) => (item.id === id && [item, newItem]) || item
     );
     setList(newList);
-    setFocusedItem(newItem.id);
+    setFocusedItemId(newItem.id);
   };
 
   const removeItem = (id: string) => {
     const previousId = getPreviousId(id);
-    setFocusedItem(previousId);
+    setFocusedItemId(previousId);
     const newList = list.filter((item) => item.id !== id);
     setList(newList);
   };
@@ -82,29 +81,47 @@ export default function List(props: Props) {
     return list[idIndex - 1].id;
   };
 
+  const setNextItemActive = (id?: string) => {
+    if (id) {
+      setActiveItemId(id);
+      return;
+    }
+    const activeIndex = list.findIndex((item) => item.id === activeItemId);
+    const nextItem = list[activeIndex + 1];
+    nextItem && setActiveItemId(nextItem.id);
+  };
+  const incrementElapsedTime = () => {
+    const elapsed = timer - timerSinceLastElapsed;
+    const item = list.find((item) => item.id === activeItemId);
+    editListItem({ elapsed: elapsed + (item?.elapsed || 0) }, activeItemId);
+    setTimerSinceLastElapsed(timer);
+  };
+
   return (
     <View style={styles.container}>
       {list.map((item) => (
         <View style={styles.listItem} key={item.id}>
           <ListItem
             item={item}
-            focused={item.id === focusedItem}
+            isActive={item.id === activeItemId}
+            focused={item.id === focusedItemId}
             timer={timer}
             appendItemToList={appendItemToList}
             editListItem={editListItem}
             removeItem={removeItem}
+            setNextItemActive={setNextItemActive}
           />
         </View>
       ))}
       {timer <= 0 && (
         <View style={styles.listItem}>
-          <Button title="[+]" onPress={() => addFirstItem(firstText)} />
+          <Button title="[+]" onPress={() => addEndItem(firstText)} />
           <TextInput
             style={styles.input}
             onChangeText={setFirstText}
             value={firstText}
             placeholder="List item"
-            onSubmitEditing={() => addFirstItem(firstText)}
+            onSubmitEditing={() => addEndItem(firstText)}
             editable={!timer}
           />
         </View>
