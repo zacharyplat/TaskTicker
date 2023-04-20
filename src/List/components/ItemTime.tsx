@@ -64,6 +64,7 @@ export default function ItemTime(props: Props) {
     );
   };
   const renderTimeLeft = () => {
+    console.log('redndering ' + Date.now());
     const color = calcTimeDifference() > 0 ? styles.underTime : styles.overTime;
     return (
       <Text style={[color, styles.itemTime, styles.countdown]}>

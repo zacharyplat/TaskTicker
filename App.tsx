@@ -15,7 +15,13 @@ export default function App() {
     }
 
     setTimer(1);
-    const interval = setInterval(() => setTimer(Date.now() - initialTime), 100);
+    const interval = setInterval(() => {
+      const diff = Date.now() - initialTime;
+      // checks often to update the timer as soon as the time changes but
+      // don't rerender every 50 miliseconds
+      // so only set a new timer if a second has elapsed
+      setTimer((prevState) => (diff > prevState + 1000 ? diff : prevState));
+    }, 50);
 
     return () => clearInterval(interval);
   }, [initialTime]);
