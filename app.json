@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "RaceToDone",
-    "slug": "RaceToDone",
+    "name": "TaskTicker",
+    "slug": "TaskTicker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,7 +18,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.TaskTicker"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,5 +32,5 @@
     },
     "sdkVersion": "47.0.0"
   },
-  "name": "racetodone"
+  "name": "taskticker"
 }
