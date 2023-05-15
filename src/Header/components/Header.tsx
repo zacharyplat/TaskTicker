@@ -47,17 +47,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   info: {
+    paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    width: '100%',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
+    color: '#4f4f4f',
   },
   time: {
     paddingLeft: 10,
     fontSize: 28,
     fontWeight: 'bold',
+    color: '#4D99B2',
   },
 });

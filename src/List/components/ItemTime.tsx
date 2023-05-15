@@ -64,19 +64,24 @@ export default function ItemTime(props: Props) {
     );
   };
   const renderTimeLeft = () => {
-    console.log('redndering ' + Date.now());
-    const color = calcTimeDifference() > 0 ? styles.underTime : styles.overTime;
+    const timeDiff = calcTimeDifference();
+
+    const displayDiff = Math.abs(timeDiff);
+    const symbole = timeDiff > 0 ? '+' : '-';
+    const color = timeDiff > 0 ? styles.underTime : styles.overTime;
     return (
       <Text style={[color, styles.itemTime, styles.countdown]}>
-        {`${padTime(calcTimeDifference() / MINUTE)}`}:
-        {`${padTime((calcTimeDifference() / SECOND) % 60)}`}
+        {`${symbole}${padTime(displayDiff / MINUTE)}`}:
+        {`${padTime((displayDiff / SECOND) % 60)}`}
       </Text>
     );
   };
   const renderCountdownOrTimeLeft = () => {
     if (!isActive && !elapsed) {
       return (
-        <Text style={styles.itemTime}>{`${minutes}:${padTime(seconds)}`}</Text>
+        <Text style={styles.itemTime}>{`${padTime(minutes)}:${padTime(
+          seconds
+        )}`}</Text>
       );
     } else {
       return renderTimeLeft();
@@ -120,9 +125,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   underTime: {
-    color: 'green',
+    color: '#58B946',
   },
   overTime: {
-    color: 'red',
+    color: '#B94658',
   },
 });

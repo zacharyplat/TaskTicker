@@ -134,14 +134,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
   },
-  info: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
   listItem: {
     flexDirection: 'row',
     alignItems: 'center',

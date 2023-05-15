@@ -51,6 +51,7 @@ export default function ListItem(props: Props) {
           style={styles.checkbox}
           value={state}
           onValueChange={handleCheckboxChange}
+          color={'#4D99B2'}
         />
       )}
       <TextInput
@@ -81,13 +82,15 @@ const styles = StyleSheet.create({
   checkbox: {
     marginRight: 18,
     padding: 10,
+    color: 'green',
   },
   item: {
     fontSize: 18,
   },
+
   input: {
     flexGrow: 4,
-    borderBottomColor: 'darkgrey',
+    borderBottomColor: 'lightgrey',
     borderBottomWidth: 2,
   },
 });
