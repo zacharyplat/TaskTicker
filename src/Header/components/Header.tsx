@@ -21,18 +21,27 @@ export default function Header(props: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Task Ticker</Text>
-      <View style={styles.info}>
+      <View style={styles.actions}>
         {timer <= 0 && (
-          <Button
-            title="&#x25B6; Start"
-            onPress={() => setInitialTime(zeroedMillisecondsDate())}
-          />
+          <Fragment>
+            <Button
+              title="&#x25B6; Start"
+              onPress={() => setInitialTime(zeroedMillisecondsDate())}
+              buttonStyle={styles.startButton}
+            />
+            <Button
+              title="Reset"
+              onPress={() => console.log('what')}
+              buttonStyle={styles.resetButton}
+            />
+          </Fragment>
         )}
         {timer > 0 && (
           <Fragment>
             <Button
               title="&#x23F9;&#xFE0E; Stop"
               onPress={() => setInitialTime(0)}
+              buttonStyle={styles.stopButton}
             />
             <Text style={styles.time}>{`${minutes}:${displaySeconds}`}</Text>
           </Fragment>
@@ -46,8 +55,8 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
   },
-  info: {
-    paddingVertical: 10,
+  actions: {
+    paddingVertical: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -62,6 +71,15 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#4D99B2',
+    color: '#4f4f4f',
+  },
+  startButton: {
+    backgroundColor: '#51C308',
+  },
+  resetButton: {
+    backgroundColor: '#4f4f4f',
+  },
+  stopButton: {
+    backgroundColor: '#C31D08',
   },
 });

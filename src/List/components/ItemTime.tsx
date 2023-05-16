@@ -79,9 +79,9 @@ export default function ItemTime(props: Props) {
   const renderCountdownOrTimeLeft = () => {
     if (!isActive && !elapsed) {
       return (
-        <Text style={styles.itemTime}>{`${padTime(minutes)}:${padTime(
-          seconds
-        )}`}</Text>
+        <Text style={[styles.itemTime, styles.inactive]}>{`${padTime(
+          minutes
+        )}:${padTime(seconds)}`}</Text>
       );
     } else {
       return renderTimeLeft();
@@ -104,6 +104,9 @@ export default function ItemTime(props: Props) {
 const styles = StyleSheet.create({
   itemTime: {
     fontSize: 18,
+  },
+  inactive: {
+    color: 'lightgrey',
   },
   input: {
     flexGrow: 1,

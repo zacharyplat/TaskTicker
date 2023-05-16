@@ -55,7 +55,7 @@ export default function ListItem(props: Props) {
         />
       )}
       <TextInput
-        style={[styles.item, styles.input]}
+        style={[styles.item, styles.input, isActive ? {} : styles.inactive]}
         onChangeText={handleChangeText}
         onKeyPress={handleOnKeyPress}
         onSubmitEditing={() => appendItemToList(id)}
@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
   checkbox: {
     marginRight: 18,
     padding: 10,
-    color: 'green',
   },
   item: {
     fontSize: 18,
@@ -92,5 +91,8 @@ const styles = StyleSheet.create({
     flexGrow: 4,
     borderBottomColor: 'lightgrey',
     borderBottomWidth: 2,
+  },
+  inactive: {
+    color: 'lightgrey',
   },
 });
